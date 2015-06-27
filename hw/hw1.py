@@ -73,25 +73,45 @@ killings.head()
 ### Less Morbid ###
 ###################
 
-majors = pd.read_csv('hw/data/college-majors.csv')
+import sys,os 
+path = os.path.realpath('../hw/data/college-majors.csv')
+majors = pd.read_csv(path)
 majors.head()
 
 # 1. Delete the columns (employed_full_time_year_round, major_code)
+  majors.drop(['Employed_full_time_year_round', 'Major_code'], axis=1, inplace=True)
 
 # 2. Show the cout of missing values in each column
 
+  majors.isnull().sum()
+
 # 3. What are the top 10 highest paying majors?
+  # Using median column as a proxy for amount a major makes
+  majors.sort_index(by='Median', ascending=False).head(10)['Major']
 
 # 4. Plot the data from the last question in a bar chart, include proper title, and labels!
-
-
+  top_10_majors_by_median = majors.sort_index(by='Median', ascending=False).head(10)[['Major', 'Median']]
+  graph = top_10_majors_by_median.plot(kind='bar', x='Major', y='Median', title='Top Paying Majors')
+  graph.set_xlabel('Major',fontsize=12)
+  graph.set_ylabel('Median',fontsize=12)
+  
 # 5. What is the average median salary for each major category?
+  
+  sorted_major_category_by_mean_of_median = majors.groupby('Major_category').Median.mean().order(ascending=False)
 
 # 6. Show only the top 5 paying major categories
-
+  sorted_major_category_by_mean_of_median.head(5)
+  
 # 7. Plot a histogram of the distribution of median salaries
+  
+  hist = majors['Median'].hist()
+  hist.set_xlabel('Median')
+  hist.set_ylabel('Count')
 
 # 8. Plot a histogram of the distribution of median salaries by major category
+  majors['Median'].hist(by=majors['Major_category'], sharex=True, sharey=True, figsize=(20,20), bins=10)
+  majors.groupby('Major_category')['Median'].hist(bins=8)
+  
 
 # 9. What are the top 10 most UNemployed majors?
 # What are the unemployment rates?
