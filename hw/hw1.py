@@ -110,11 +110,8 @@ majors.head()
   hist.set_xlabel('Median')
   hist.set_ylabel('Count')
 
-# 8. Plot a histogram of the distribution of median salaries by major category
-  # majors['Median'].hist(by=majors['Major_category'], sharex=True, sharey=True, figsize=(20,20), bins=10)
-  # majors.groupby('Major_category')['Median'].hist(bins=8)
-  majors.groupby('Major_category')['Median'].mean().plot(kind='bar')
-  # how do I get major category to show up instead of index?
+# 8. Create a bar chart showing average median salaries for each major_category
+  majors.groupby('Major_category')['Median'].mean().order().plot(kind='bar')
   
 # 9. What are the top 10 most UNemployed majors?
 # What are the unemployment rates?
