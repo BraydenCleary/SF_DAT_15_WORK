@@ -73,6 +73,8 @@ killings.head()
 ### Less Morbid ###
 ###################
 
+
+import pandas as pd
 import sys,os 
 path = os.path.realpath('../hw/data/college-majors.csv')
 majors = pd.read_csv(path)
@@ -109,21 +111,26 @@ majors.head()
   hist.set_ylabel('Count')
 
 # 8. Plot a histogram of the distribution of median salaries by major category
-  majors['Median'].hist(by=majors['Major_category'], sharex=True, sharey=True, figsize=(20,20), bins=10)
-  majors.groupby('Major_category')['Median'].hist(bins=8)
+  # majors['Median'].hist(by=majors['Major_category'], sharex=True, sharey=True, figsize=(20,20), bins=10)
+  # majors.groupby('Major_category')['Median'].hist(bins=8)
+  majors.groupby('Major_category')['Median'].mean().plot(kind='bar')
+  # how do I get major category to show up instead of index?
   
-
 # 9. What are the top 10 most UNemployed majors?
 # What are the unemployment rates?
+  majors.sort_index(by='Unemployment_rate', ascending=False)[['Major', 'Unemployment_rate']].head(10)
 
 # 10. What are the top 10 most UNemployed majors CATEGORIES? Use the mean for each category
 # What are the unemployment rates?
+  majors.groupby('Major_category')['Unemployment_rate'].mean().order(ascending=False).head(10)
 
 # 11. the total and employed column refer to the people that were surveyed.
 # Create a new column showing the emlpoyment rate of the people surveyed for each major
 # call it "sample_employment_rate"
 # Example the first row has total: 128148 and employed: 90245. it's
 # sample_employment_rate should be 90245.0 / 128148.0 = .7042
+  majors['sample_employment_rate'] = majors['Employed'] / majors['Total']
 
 # 12. Create a "sample_unemployment_rate" colun
 # this column should be 1 - "sample_employment_rate"
+  majors['sample_unemployment_rate'] = 1 - majors['sample_employment_rate']
