@@ -3,17 +3,20 @@
 # 1. read in the yelp dataset
 
 import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.cross_validation import train_test_split
+from sklearn import metrics
+import numpy as np
+import statsmodels.formula.api as smf
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
+
 yelp_data = pd.read_csv("https://raw.githubusercontent.com/sinanuozdemir/SF_DAT_15/master/hw/optional/yelp.csv")
 yelp_data.head()
 
 # 2. Perform a linear regression using 
 # "stars" as your response and 
 # "cool", "useful", and "funny" as predictors
-
-from sklearn.linear_model import LinearRegression
-from sklearn.cross_validation import train_test_split
-from sklearn import metrics
-import numpy as np
 
 linreg = LinearRegression()
 X = yelp_data[['cool', 'useful', 'funny']]
@@ -36,7 +39,6 @@ rmse   = np.sqrt(metrics.mean_squared_error(response_test, y_pred))
 # for each of the three predictors
 # Using a .05 confidence level, 
 # Should we eliminate any of the three?
-import statsmodels.formula.api as smf
 
 lm = smf.ols(formula='stars ~ cool + useful + funny', data=yelp_data).fit()
 lm.pvalues
@@ -59,7 +61,6 @@ yelp_data['good_rating'] = yelp_data.stars.apply(good_or_not)
 # "good_rating" as your response and the same
 # three predictors
 
-from sklearn.linear_model import LogisticRegression
 logreg = LogisticRegression()
 X = yelp_data[['cool', 'useful', 'funny']]
 y = yelp_data['good_rating']
@@ -75,7 +76,6 @@ def logreg_metrics(cmat):
     # returns sensitivity, specificity, and accuracy
     return [cmat[1][1] / float(cmat[0][1] + cmat[1][1]), cmat[0][0] / float(cmat[0][0] + cmat[1][0]), (cmat[0][0] + cmat[1][1]) / float((cmat.sum()))]
 
-from sklearn.metrics import confusion_matrix
 cmat = confusion_matrix(response_test, y_pred)
 logreg_metrics(cmat)
 
@@ -169,8 +169,18 @@ logreg_metrics(cmat)
 # 9. now use ANY of your variables as predictors
 # Still using survived as a response to boost metrics!
 
+def is_child(name, sibsp, age):
+    if 'Mr.' in name or 'Mrs.' in name:
+        return False
+    elif sibsp >= 1 and age < 13:
+        return True
+    else:
+        return False
+
+titanic_data['is_child'] = titanic_data.apply(lambda x: is_child(x['Name'], x['SibSp'], x['Age']), axis=1)
+    
 logreg = LogisticRegression()
-X = titanic_data[['Age', 'wife', 'Parch', 'SibSp']]
+X = titanic_data[['Age', 'wife', 'Parch', 'SibSp', 'is_child']]
 y = titanic_data['Survived']
 features_train, features_test, response_train, response_test = train_test_split(X, y, random_state=3)
 logreg.fit(features_train, response_train)
