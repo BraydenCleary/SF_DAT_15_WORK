@@ -17,8 +17,10 @@ PARK_VENUES = {
 client = Foursquare2::Client.new(:api_version => '20140806', client_secret: CREDENTIALS['client_secret'], client_id: CREDENTIALS['client_id'])
 
 CSV.open(PATH_TO_FOURSQUARE, 'ab') do |csv|
-  PARK_VENUES.each do |park_name, park_id|
-    csv << [park_id, client.venue(park_id).values[7].checkinsCount, park_name, Time.now]
+  loop do
+    PARK_VENUES.each do |park_name, park_id|
+      csv << [park_id, client.venue(park_id).values[7].checkinsCount, park_name, Time.now]
+    end
     sleep(86400)
   end
 end
