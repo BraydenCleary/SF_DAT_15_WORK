@@ -1,4 +1,0 @@
-Datasets:
-- Count of tweets that occured in 6 major SF parks since july 13th (response) (collection ongoing)
-- All SF tweets since July 13th (collection ongoing)
-- Weather data since July 13th (haven't started collecting yet but shouldn't be difficult)
