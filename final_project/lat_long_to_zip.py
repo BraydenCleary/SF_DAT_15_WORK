@@ -16,11 +16,10 @@ for index, row in lat_long.iterrows():
     zip = str(requests.get(url).json()['data'][0]['UsZcta2010']['ZctaCode']) + '\n'
   except Exception as e:
     print(e)
-    # zip = str(0) + '\n'
-    # fd = open('zips.csv','a')
-    # fd.write(str(index) + ', ' + zip)
-    # fd.close()
-  # fd = open('zips.csv','a')
-  # fd.write(str(index) + ', ' + zip)
-  # fd.close()
-  print(zip)
+    zip = str(0) + '\n'
+    fd = open('zips.csv','a')
+    fd.write(str(index) + ', ' + zip)
+    fd.close()
+  fd = open('zips.csv','a')
+  fd.write(str(index) + ', ' + zip)
+  fd.close()
