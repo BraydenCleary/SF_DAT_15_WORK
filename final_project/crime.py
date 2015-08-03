@@ -7,6 +7,7 @@ Created on Mon Jul 27 09:22:53 2015
 
 # link to train data: https://www.dropbox.com/s/xgas3ao2as5n5eo/crime_train.csv?dl=0
 # link to test data: https://www.dropbox.com/s/jt5wvpnlhh9s4yf/crime_test.csv?dl=0
+# scp -i  /Users/braydencleary/.ssh/braydencleary.pem /Users/braydencleary/Desktop/crime_train.csv ec2-user@ec2-54-164-20-61.compute-1.amazonaws.com:~/
 import pandas as pd
 import numpy as np
 from sklearn.grid_search import GridSearchCV
@@ -15,15 +16,31 @@ from sklearn.cross_validation import train_test_split
 from sklearn import tree
 from sklearn import metrics
 import matplotlib.pyplot as plt
+from datetime import datetime
 
-# For each predictor, convert to a binary column
+# Read in datasets
 crime_train = pd.read_csv("../../../crime_train.csv")
-#crime_test  = pd.read_csv("../../../crime_test.csv")
+crime_test  = pd.read_csv("../../../crime_test.csv")
 
 crime_train.rename(columns={'X': 'Long', 'Y': 'Lat'}, inplace=True)
+crime_train['Round_Lat'] = test['Lat'].apply(lambda x: round(x,3))
+crime_train['Round_Long'] = test['Long'].apply(lambda x: round(x,3))
+crime_train['weapon_present'] = crime_train.apply(lambda x: 1 if any(word in ['knife', 'gun', 'weapon'] for word in x['Descript'].lower().split(' ')) else 0, axis=1)
+crime_train['is_weekend'] = crime_train.apply(lambda x: 1 if datetime.strptime('2003-01-06 00:01:00', '%Y-%m-%d %H:%M:%S').weekday() else 0)
+
+crime_train = pd.concat([crime_train, pd.get_dummies(crime_train, columns=['DayOfWeek', 'PdDistrict'])], axis=1)
+
+test_X = test[['Round_Lat','Round_Long','weapon_present']]
+test_Y = test['Category']
+
+test_knn = KNeighborsClassifier(n_neighbors=3)
+test_knn.fit(test_X, test_Y )
+test['predictions'] = test_knn.predict(test_X)
+
+
 #crime_test.rename(columns={'X': 'Long', 'Y': 'Lat'}, inplace=True)
 
-with_dummies_train = pd.get_dummies(crime_train, columns=['DayOfWeek', 'PdDistrict', 'Resolution'])
+
 #with_dummies_test = pd.get_dummies(crime_test, columns=['DayOfWeek', 'PdDistrict'])
 
 binary_columns = np.array(with_dummies_train.columns[6:])
@@ -33,23 +50,22 @@ y = with_dummies_train['Category']
 #features_test  = with_dummies_test[binary_columns]
 #response_test  = with_dummies_test['Category']
 
-features_train, features_test, response_train, response_test = train_test_split(X, y, random_state=1)
+#Train test split
+features_train, features_test, response_train, response_test = train_test_split(X, y, random_state=1, train_size=.33)
 
-knn = KNeighborsClassifier(n_neighbors=1)
-knn.fit(features_train, response_train)
-knn.score(features_test, response_test) #.19 accuracy
-
-####
-
+#Weekday Columns
 weekday_columns = np.array(with_dummies_train.columns[6:13])
 X = with_dummies_train[weekday_columns]
 
 features_train, features_test, response_train, response_test = train_test_split(X, y, random_state=1)
-knn = KNeighborsClassifier(n_neighbors=1)
+knn = KNeighborsClassifier(n_neighbors=5)
 knn.fit(features_train, response_train)
 knn.score(features_test, response_test) # .09 accuracy
 
 ####
+knn = KNeighborsClassifier(n_neighbors=1)
+knn.fit(features_train, response_train)
+knn.score(features_test, response_test) #.19 accuracy
 
 # Use grid search
 knn = KNeighborsClassifier()
