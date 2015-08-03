@@ -48,8 +48,16 @@ def determine_time_of_day_bucket(date):
         return 8
 
 # Read in datasets
-crime_train = pd.read_csv("../../../crime_train.csv")
-crime_test  = pd.read_csv("../../../crime_test.csv")
+crime_train = pd.read_csv('https://s3.amazonaws.com/braydencleary-data/final_project/crime_train.csv')
+crime_test  = pd.read_csv('https://s3.amazonaws.com/braydencleary-data/final_project/crime_test.csv')
+zips        = pd.read_csv('https://s3.amazonaws.com/braydencleary-data/final_project/zips_train.csv')
+additional_data_for_zips_train = pd.read_csv('https://s3.amazonaws.com/braydencleary-data/final_project/additional_data_for_zips_train.csv')
+zips.drop_duplicates(subset='index_of_crime_train', inplace=True)
+zips.set_index('index_of_crime_train', inplace=True)
+crime_train = pd.merge(crime_train, zips, how='inner', left_index=True, right_index=True)
+# need to join crime_train with additional_data_for_zips_train on ' zip' == ' ZctaCode'
+    # hey = pd.merge(crime_train, additional_data_for_zips_train, how='inner', left_on=' zip', right_on=' ZctaCode')
+
 
 dummies = pd.get_dummies(crime_train, columns=['DayOfWeek', 'PdDistrict'])
 for column_name, column in dummies.transpose().iterrows():

@@ -17,9 +17,9 @@ for index, row in lat_long.iterrows():
   except Exception as e:
     print(e)
     zip = str(0) + '\n'
-    fd = open('zips.csv','a')
+    fd = open('zips_train.csv','a')
     fd.write(str(index) + ', ' + zip)
     fd.close()
-  fd = open('zips.csv','a')
+  fd = open('zips_train.csv','a')
   fd.write(str(index) + ', ' + zip)
   fd.close()
