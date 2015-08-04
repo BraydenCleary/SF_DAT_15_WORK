@@ -17,21 +17,21 @@ from sklearn import tree
 from sklearn import metrics
 import matplotlib.pyplot as plt
 from datetime import datetime
-import feature_development
 
-# Read in datasets
-crime_train = feature_development.build_crime_train_dataset()
-crime_test  = pd.read_csv('https://s3.amazonaws.com/braydencleary-data/final_project/crime_test.csv')
+# Read in dataset
+crime_train = pd.read_csv('https://s3.amazonaws.com/braydencleary-data/final_project/crime_with_features.csv')
+# drop columns where zip is 0 (gps coordinates were whack)
+crime_train = crime_train[crime_train.zip != 0]
+
+X = c[['zip', 'CensusAgeMedianAge', 'CensusAgePercent10To14', 'DayOfWeek_Friday', 'DayOfWeek_Monday', 'DayOfWeek_Saturday', 'DayOfWeek_Sunday', 'DayOfWeek_Thursday', 'DayOfWeek_Tuesday', 'DayOfWeek_Wednesday', 'PdDistrict_BAYVIEW', 'PdDistrict_CENTRAL', 'PdDistrict_INGLESIDE', 'PdDistrict_MISSION', 'PdDistrict_NORTHERN', 'PdDistrict_PARK', 'PdDistrict_RICHMOND', 'PdDistrict_SOUTHERN', 'PdDistrict_TARAVAL', 'PdDistrict_TENDERLOIN', 'is_weekend', 'time_of_day_bucket', 'day_of_month', 'month_of_year', 'year']]
+y = c['Category']
+
+
+##### need to redo everything below given my above dataset #####
 
 test_knn = KNeighborsClassifier(n_neighbors=3)
 test_knn.fit(test_X, test_Y )
 test['predictions'] = test_knn.predict(test_X)
-
-
-#crime_test.rename(columns={'X': 'Long', 'Y': 'Lat'}, inplace=True)
-
-
-#with_dummies_test = pd.get_dummies(crime_test, columns=['DayOfWeek', 'PdDistrict'])
 
 binary_columns = np.array(with_dummies_train.columns[6:])
 
