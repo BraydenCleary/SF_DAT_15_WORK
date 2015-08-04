@@ -17,21 +17,11 @@ from sklearn import tree
 from sklearn import metrics
 import matplotlib.pyplot as plt
 from datetime import datetime
+import feature_development
 
 # Read in datasets
-crime_train = pd.read_csv("../../../crime_train.csv")
-crime_test  = pd.read_csv("../../../crime_test.csv")
-
-crime_train.rename(columns={'X': 'Long', 'Y': 'Lat'}, inplace=True)
-crime_train['Round_Lat'] = test['Lat'].apply(lambda x: round(x,3))
-crime_train['Round_Long'] = test['Long'].apply(lambda x: round(x,3))
-crime_train['weapon_present'] = crime_train.apply(lambda x: 1 if any(word in ['knife', 'gun', 'weapon'] for word in x['Descript'].lower().split(' ')) else 0, axis=1)
-crime_train['is_weekend'] = crime_train.apply(lambda x: 1 if datetime.strptime('2003-01-06 00:01:00', '%Y-%m-%d %H:%M:%S').weekday() else 0)
-
-crime_train = pd.concat([crime_train, pd.get_dummies(crime_train, columns=['DayOfWeek', 'PdDistrict'])], axis=1)
-
-test_X = test[['Round_Lat','Round_Long','weapon_present']]
-test_Y = test['Category']
+crime_train = feature_development.build_crime_train_dataset()
+crime_test  = pd.read_csv('https://s3.amazonaws.com/braydencleary-data/final_project/crime_test.csv')
 
 test_knn = KNeighborsClassifier(n_neighbors=3)
 test_knn.fit(test_X, test_Y )
@@ -107,7 +97,7 @@ grid.fit(X, y)
 
 grid.best_score_ # 33.09
 
-#### 
+####
 from sklearn.naive_bayes import MultinomialNB
 nb = MultinomialNB()
 
@@ -120,7 +110,7 @@ preds = nb.predict(features_test)
 
 metrics.accuracy_score(response_test, preds) #.32
 
-#### 
+####
 
 with_dummies_train['weapon_present'] = crime_train.apply(lambda x: 1 if any(word in ['knife', 'gun', 'weapon'] for word in x['Descript'].lower().split(' ')) else 0, axis=1)
 
