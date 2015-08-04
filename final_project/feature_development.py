@@ -55,9 +55,8 @@ additional_data_for_zips_train = pd.read_csv('https://s3.amazonaws.com/braydencl
 zips.drop_duplicates(subset='index_of_crime_train', inplace=True)
 zips.set_index('index_of_crime_train', inplace=True)
 crime_train = pd.merge(crime_train, zips, how='inner', left_index=True, right_index=True)
-# need to join crime_train with additional_data_for_zips_train on ' zip' == ' ZctaCode'
-    # hey = pd.merge(crime_train, additional_data_for_zips_train, how='inner', left_on=' zip', right_on=' ZctaCode')
-
+crime_train = pd.merge(crime_train, additional_data_for_zips_train, how='outer', left_on=' zip', right_on=' ZctaCode')
+crime_train.rename(columns=lambda x: x.strip(), inplace=True)
 
 dummies = pd.get_dummies(crime_train, columns=['DayOfWeek', 'PdDistrict'])
 for column_name, column in dummies.transpose().iterrows():
