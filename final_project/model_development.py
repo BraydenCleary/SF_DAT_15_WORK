@@ -221,4 +221,9 @@ smoothie_tree.predict(c[smoothie_features])
 
 tree.predict_proba(np.array(c.ix[1][smoothie_features]))
 
+# write a program that takes in a time and returns the advantageous areas (zips) of SF and the disadvantageous areas (zips)
 
+SAN_FRANCISCO_ZIP_CODES = [94102, 94109, 94123, 94117, 94134, 94112, 94124, 94121, 94133, 94116, 94115, 94110, 94127, 94114, 94107, 94132, 94122, 94103, 94105, 94104, 94108, 94118, 94158, 94111, 94131, 94130, 94014, 94129, 94015]
+
+def something(time):
+  for zip in SAN_FRANCISCO_ZIP_CODES:
