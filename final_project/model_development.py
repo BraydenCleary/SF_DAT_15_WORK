@@ -19,6 +19,9 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import svm, linear_model, datasets
 
 # Read in dataset
 c = pd.read_csv('https://s3.amazonaws.com/braydencleary-data/final_project/crime_with_features.csv')
@@ -143,11 +146,25 @@ sorted_features = np.array(pd.DataFrame({'feature': good_features, 'importance':
 sorted_features = ['day_of_month', 'time_of_day_bucket', 'month_of_year', 'year','DayOfWeek_Friday', 'DayOfWeek_Wednesday', 'DayOfWeek_Tuesday','DayOfWeek_Thursday', 'DayOfWeek_Monday', 'PdDistrict_TENDERLOIN','PdDistrict_NORTHERN', 'DayOfWeek_Saturday', 'DayOfWeek_Sunday','is_weekend', 'PdDistrict_SOUTHERN', 'PdDistrict_CENTRAL','PdDistrict_PARK', 'PdDistrict_MISSION','CensusRacePercentOtherOnly', 'PdDistrict_INGLESIDE','CensusRaceOtherOnly', 'CensusHispanicPercentMexican','PdDistrict_BAYVIEW', 'CensusHispanicMexican', 'CensusAge18To19','CensusAgePercent15To19', 'PdDistrict_RICHMOND','PdDistrict_TARAVAL', 'CensusAge15To17', 'CensusAgeUnder18','CensusHispanicPercentOtherHispanic','CensusHouseholdsPercentLivingAlone','CensusHouseholdsFemaleHouseholder', 'CensusRaceIndian','CensusHouseholdsHouseholdsWithUnder18','CensusHispanicPuertoRican', 'CensusAge10To14', 'CensusAge45To54','CensusHouseholdsAverageFamilySize','CensusHouseholdsPercentMarriedCouple', 'CensusAge45To64','CensusHouseholdsPercentFamilies', 'CensusAgePercentOver18Male','CensusRaceHawaiianPIOnly', 'CensusRaceBlackOnly','CensusAge15To19', 'CensusHouseholdsAverageHouseholdSize','CensusHispanicOtherHispanic','CensusHouseholdsPercentFamilyKidsUnder18', 'ZctaCode','CensusHispanicTotalPopulation', 'CensusHispanicCuban','CensusAgePercent0To4', 'CensusAgePercentOver18','CensusHouseholdsMarriedCoupleKidsUnder18','CensusHouseholdsPercentSingleMoms', 'CensusHouseholdsSingleMoms','CensusAge55To59', 'CensusHouseholdsFamilyKidsUnder18','CensusAge5To9', 'CensusAge0To4','CensusHouseholdsPercentHouseholdsWithUnder18','CensusAgePercent5To9', 'CensusAge18To24','CensusRacePercentIndian', 'CensusHispanicPercentHispanic','CensusHouseholdsPercentMarriedCoupleKidsUnder18','CensusHispanicPercentCuban', 'CensusAgePercentUnder18','CensusAgeMedianAge', 'CensusHouseholdsLivingAlone','CensusAge20To24', 'CensusHouseholdsPercentFemaleHouseholder','CensusAgePercentOver21', 'zip', 'CensusAgePercent10To14','CensusHouseholdsTotalFamilies', 'CensusRaceMultiRace','CensusAgePercentOver18Female', 'CensusAgePercent18To19', 'GeoId','CensusHispanicPercentPuertoRican', 'CensusSexPercentMale','CensusAgePercentOver65Male', 'CensusAgePercent15To17','CensusRaceOneRaceOnly', 'CensusHispanicNonHispanic','CensusAgePercent55To59', 'CensusAgePercent45To64','CensusAge60To64', 'CensusAgePercent65To74','CensusHouseholdsPercentNonFamily', 'CensusAgeOver18Male','CensusHouseholdsWithOver65', 'CensusHouseholdsNonFamily','CensusAgeOver62', 'CensusAgePercent45To54','CensusHouseholdsMarriedCouple', 'CensusHispanicPercentNonHispanic','CensusAge65To74', 'CensusAgeOver18Female', 'LongitudeDeg','LandAreaSqM', 'LatitudeDeg', 'CensusPeoplePerSqMi', 'AskGeoId','CensusAgePercentOver85', 'CensusSexMale','CensusAgePercentOver65Female', 'CensusAgePercent20To24','CensusHouseholdsPercentUnmarriedPartner','CensusHispanicPercentWhiteNonHispanic', 'CensusAgePercentOver65','CensusAgePercent35To44', 'CensusTotalPopulation','CensusHouseholdsTotal', 'CensusRacePercentMultiRace','CensusSexPercentFemale', 'CensusAgePercent60To64','CensusAgePercentOver62', 'CensusRaceAsianOnly','CensusRacePercentAsianOnly', 'CensusHispanicWhiteNonHispanic','WaterAreaSqM', 'CensusRacePercentBlackOnly','CensusHouseholdsHouseholderOver65', 'CensusAgePercent25To34','CensusAgePercent75To84', 'CensusAgeOver21','CensusHouseholdsPercentHouseholderOver65','CensusHouseholdsUnmarriedPartner','CensusHouseholdsSameSexPartner', 'CensusAge35To44','CensusHouseholdsPercentWithOver65','CensusRacePercentHawaiianPIOnly', 'CensusSexFemale','CensusRacePercentWhiteOnly', 'CensusRaceWhiteOnly','CensusAge25To44', 'CensusRacePercentOneRaceOnly','CensusAgeOver65', 'CensusAgeOver65Male', 'CensusEsriId','CensusHouseholdsPercentSameSexPartner', 'CensusAge75To84','CensusAgeOver18', 'CensusAgePercent25To44','CensusAgePercent18To24', 'CensusAgeOver85','CensusAgeOver65Female', 'CensusAge25To34', 'CensusGeoId','MinDistanceKm', 'CensusGeoLevel']
 ##
 
-features_to_use = sorted_features[0:100]
+features_to_use = sorted_features[0:5]
 
 X = c[features_to_use]
 X_small = small[features_to_use]
 y_small = small[response]
+
+#### normalize data before running knn ####
+
+normalized_x_small = (X_small - X_small.mean()) / X_small.std()
+knn = KNeighborsClassifier()
+k_range = range(1, 30, 1)
+param_grid = dict(n_neighbors=k_range)
+grid = GridSearchCV(knn, param_grid, cv=5, scoring='accuracy')
+grid.fit(normalized_x_small, y_small)
+grid.best_score_
+
+#  did worse with normalizing data....sheeeiiiiiiit
+
+#### end normalize ###
 
 knn = KNeighborsClassifier()
 k_range = range(1, 30, 1)
@@ -208,7 +225,9 @@ smoothies['smoothie_selling_safety'].value_counts()
 small = smoothies.sample(10000)
 
 X_small = small[smoothie_features]
-y = small['smoothie_selling_safety']
+y       = small['smoothie_selling_safety']
+
+# decision tree (best)
 
 ctree = tree.DecisionTreeClassifier()
 depth_range = range(1, 50)
@@ -216,6 +235,41 @@ param_grid = dict(max_depth=depth_range)
 grid = GridSearchCV(ctree, param_grid, cv=5)
 grid.fit(X_small, y)
 smoothie_tree = grid.best_estimator_
+
+# logistic regression (3rd)
+
+logreg = LogisticRegression()
+grid = GridSearchCV(logreg, {}, cv=5)
+grid.fit(X_small, y)
+smoothie_log_reg = grid.best_estimator_
+
+# random forest (2nd)
+
+from sklearn.ensemble import RandomForestClassifier
+rfclf = RandomForestClassifier(n_estimators=100, max_features='auto', oob_score=True, random_state=1)
+grid = GridSearchCV(rfclf, {}, cv=5)
+grid.fit(X_small, y)
+
+# knn (68%)
+
+knn = KNeighborsClassifier()
+k_range = range(1, 30, 1)
+param_grid = dict(n_neighbors=k_range)
+grid = GridSearchCV(knn, param_grid, cv=5, scoring='accuracy')
+grid.fit(X_small, y)
+
+# naive bayes (58%)
+
+nb = MultinomialNB()
+grid = GridSearchCV(nb, {}, cv=5)
+grid.fit(X_small, y)
+
+# SVM
+
+clf = svm.SVC()
+param_grid = {'kernel': ['linear', 'poly', 'rbf', 'sigmoid'], 'gamma': [.000001, .00001, .0001, .001, .01, .1, 1, 10, 100, 1000, 10000, 10000], 'C': [float(x) for x in range(1,50)], 'degree': range(1,20)}
+grid = GridSearchCV(clf, param_grid , cv=5)
+grid.fit(X_small, y)
 
 smoothie_tree.predict(c[smoothie_features])
 
