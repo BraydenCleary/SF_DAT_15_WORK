@@ -258,6 +258,14 @@ param_grid = dict(n_neighbors=k_range)
 grid = GridSearchCV(knn, param_grid, cv=5, scoring='accuracy')
 grid.fit(X_small, y)
 
+# normalized knn (66%)
+
+knn = KNeighborsClassifier()
+k_range = range(1, 30, 1)
+param_grid = dict(n_neighbors=k_range)
+grid = GridSearchCV(knn, param_grid, cv=5, scoring='accuracy')
+grid.fit((X_small - X_small.mean()) / X_small.std(), y)
+
 # naive bayes (58%)
 
 nb = MultinomialNB()
