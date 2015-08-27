@@ -10,6 +10,7 @@ Created on Mon Jul 27 09:22:53 2015
 # scp -i  /Users/braydencleary/.ssh/braydencleary.pem /Users/braydencleary/Desktop/crime_train.csv ec2-user@ec2-54-164-20-61.compute-1.amazonaws.com:~/
 import pandas as pd
 import numpy as np
+from sklearn import metrics
 from sklearn.grid_search import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.cross_validation import train_test_split
@@ -62,7 +63,7 @@ c = pd.read_csv('https://s3.amazonaws.com/braydencleary-data/final_project/crime
 
 c = c[c.zip != 0]
 
-features = ['is_weekend', 'PdDistrict_TENDERLOIN', 'PdDistrict_MISSION','DayOfWeek_Friday', 'DayOfWeek_Monday','DayOfWeek_Saturday', 'DayOfWeek_Sunday', 'DayOfWeek_Thursday','DayOfWeek_Tuesday', 'DayOfWeek_Wednesday','PdDistrict_BAYVIEW','PdDistrict_CENTRAL', 'PdDistrict_INGLESIDE', ,'PdDistrict_NORTHERN', 'PdDistrict_PARK', 'PdDistrict_RICHMOND','PdDistrict_SOUTHERN', 'PdDistrict_TARAVAL']
+features = ['is_weekend', 'PdDistrict_TENDERLOIN', 'PdDistrict_MISSION','DayOfWeek_Friday', 'DayOfWeek_Monday','DayOfWeek_Saturday', 'DayOfWeek_Sunday', 'DayOfWeek_Thursday','DayOfWeek_Tuesday', 'DayOfWeek_Wednesday','PdDistrict_BAYVIEW','PdDistrict_CENTRAL', 'PdDistrict_INGLESIDE', 'PdDistrict_NORTHERN', 'PdDistrict_PARK', 'PdDistrict_RICHMOND','PdDistrict_SOUTHERN', 'PdDistrict_TARAVAL']
 response = 'Category'
 X = c[features]
 y = c[response]
@@ -116,7 +117,7 @@ metrics.accuracy_score(response_test, preds) #.34
 
 c = pd.read_csv('https://s3.amazonaws.com/braydencleary-data/final_project/crime_with_features.csv')
 # drop columns where zip is 0 (gps coordinates were whack)
-small = c[c.zip != 0].sample(10000, random_state=1)
+small = c[c.zip != 0].sample(10000)
 c = c[c.zip != 0]
 
 response = 'Category'
@@ -138,15 +139,22 @@ for feature in relevant_features:
 
 good_features = ['zip', 'CensusAgeMedianAge', 'CensusAgePercent10To14', 'LatitudeDeg', 'CensusHouseholdsWithOver65', 'CensusHouseholdsPercentHouseholdsWithUnder18', 'CensusAgeOver18', 'CensusHouseholdsPercentFamilyKidsUnder18', 'CensusRacePercentIndian', 'CensusRacePercentAsianOnly', 'CensusAgeUnder18', 'CensusTotalPopulation', 'CensusAgePercent45To54', 'CensusAgePercentOver65Female', 'CensusGeoId', 'CensusAgePercentOver18Female', 'CensusRacePercentHawaiianPIOnly', 'CensusHouseholdsPercentHouseholderOver65', 'CensusAge18To19', 'CensusSexMale', 'CensusEsriId', 'CensusAgeOver21', 'CensusAgePercent15To17', 'CensusAgePercent15To19', 'CensusHispanicMexican', 'CensusHispanicPercentNonHispanic', 'CensusAge0To4', 'CensusSexFemale', 'LongitudeDeg', 'CensusAgePercent5To9', 'CensusAge20To24', 'CensusHouseholdsHouseholderOver65', 'CensusRaceWhiteOnly', 'CensusAge60To64', 'CensusHouseholdsPercentSameSexPartner', 'CensusAge25To44', 'CensusRacePercentOtherOnly', 'MinDistanceKm', 'CensusHouseholdsPercentLivingAlone', 'CensusHouseholdsPercentFamilies', 'CensusHouseholdsUnmarriedPartner', 'CensusHouseholdsNonFamily', 'CensusRaceBlackOnly', 'WaterAreaSqM', 'CensusAgePercentOver65', 'CensusAgePercentOver62', 'CensusHispanicTotalPopulation', 'CensusHispanicWhiteNonHispanic', 'CensusHispanicPercentOtherHispanic', 'CensusRaceOneRaceOnly', 'CensusAgePercent65To74', 'CensusAge45To54', 'CensusAgePercent55To59', 'AskGeoId', 'CensusAge15To19', 'CensusAgeOver65Male', 'CensusAge15To17', 'CensusAgePercentOver18', 'CensusAgePercentOver65Male', 'CensusHouseholdsTotal', 'CensusAgePercent45To64', 'CensusRaceAsianOnly', 'CensusAgeOver65Female', 'GeoId', 'CensusAge45To64', 'CensusAgePercentOver85', 'CensusAge10To14', 'CensusHouseholdsPercentFemaleHouseholder', 'CensusAge55To59', 'CensusHouseholdsSameSexPartner', 'CensusRaceMultiRace', 'CensusHispanicPercentMexican', 'CensusHispanicPuertoRican', 'CensusAgePercent60To64', 'CensusSexPercentFemale', 'CensusHouseholdsMarriedCoupleKidsUnder18', 'CensusHispanicPercentWhiteNonHispanic', 'CensusHouseholdsPercentMarriedCouple', 'CensusHouseholdsHouseholdsWithUnder18', 'CensusHouseholdsPercentSingleMoms', 'CensusAge75To84', 'CensusAgePercent75To84', 'CensusAgePercent20To24', 'CensusHouseholdsPercentNonFamily', 'CensusAge25To34', 'CensusAgePercent18To24', 'CensusGeoLevel', 'CensusRaceHawaiianPIOnly', 'CensusAgeOver18Female', 'CensusAgeOver62', 'CensusAgeOver65', 'CensusHispanicCuban', 'CensusAgePercent35To44', 'CensusHouseholdsPercentWithOver65', 'CensusRacePercentWhiteOnly', 'CensusAge18To24', 'CensusHispanicNonHispanic', 'CensusAgePercent18To19', 'CensusHouseholdsTotalFamilies', 'CensusAgeOver18Male', 'CensusHouseholdsSingleMoms', 'CensusRaceIndian', 'CensusRacePercentBlackOnly', 'CensusHouseholdsFamilyKidsUnder18', 'CensusHouseholdsLivingAlone', 'CensusAgePercent25To44', 'CensusRacePercentMultiRace', 'CensusRaceOtherOnly', 'CensusPeoplePerSqMi', 'CensusHouseholdsFemaleHouseholder', 'CensusAge5To9', 'CensusRacePercentOneRaceOnly', 'CensusHispanicPercentPuertoRican', 'CensusHispanicPercentCuban', 'CensusAgePercentOver21', 'CensusHispanicPercentHispanic', 'CensusHouseholdsPercentMarriedCoupleKidsUnder18', 'CensusHouseholdsMarriedCouple', 'CensusAgePercent25To34', 'CensusAgePercentUnder18', 'CensusHouseholdsAverageFamilySize', 'CensusAgePercent0To4', 'CensusHouseholdsAverageHouseholdSize', 'ZctaCode', 'CensusSexPercentMale', 'CensusAge35To44', 'CensusAgePercentOver18Male', 'CensusHouseholdsPercentUnmarriedPartner', 'CensusHispanicOtherHispanic', 'CensusAgeOver85', 'LandAreaSqM', 'CensusAge65To74', 'DayOfWeek_Friday', 'DayOfWeek_Monday', 'DayOfWeek_Saturday', 'DayOfWeek_Sunday', 'DayOfWeek_Thursday', 'DayOfWeek_Tuesday', 'DayOfWeek_Wednesday', 'PdDistrict_BAYVIEW', 'PdDistrict_CENTRAL', 'PdDistrict_INGLESIDE', 'PdDistrict_MISSION', 'PdDistrict_NORTHERN', 'PdDistrict_PARK', 'PdDistrict_RICHMOND', 'PdDistrict_SOUTHERN', 'PdDistrict_TARAVAL', 'PdDistrict_TENDERLOIN', 'is_weekend', 'time_of_day_bucket', 'day_of_month', 'month_of_year', 'year']
 
-rfclf = RandomForestClassifier(n_estimators=100, max_features='auto', oob_score=True, random_state=1)
-rfclf.fit(c[good_features], y)
+
+# the sorted feature vary greatly based on the max_depth provided to the model
+small = c[c.zip != 0].sample(10000)
+x_train, x_test, y_train, y_test = train_test_split(small[good_features], small[response])
+rfclf = RandomForestClassifier(max_depth=5, n_estimators=100, max_features='auto', oob_score=True, random_state=1)
+dtree = tree.DecisionTreeClassifier(max_depth=5)
+dtree.fit(x_train, y_train)
+rfclf.fit(x_train, y_train)
 sorted_features = np.array(pd.DataFrame({'feature': good_features, 'importance': rfclf.feature_importances_ }).sort(columns='importance', ascending=False)['feature'])
+sorted_features_yo = np.array(pd.DataFrame({'feature': good_features, 'importance': dtree.feature_importances_ }).sort(columns='importance', ascending=False)['feature'])
 
 ## result of most important features according to random forest
 sorted_features = ['day_of_month', 'time_of_day_bucket', 'month_of_year', 'year','DayOfWeek_Friday', 'DayOfWeek_Wednesday', 'DayOfWeek_Tuesday','DayOfWeek_Thursday', 'DayOfWeek_Monday', 'PdDistrict_TENDERLOIN','PdDistrict_NORTHERN', 'DayOfWeek_Saturday', 'DayOfWeek_Sunday','is_weekend', 'PdDistrict_SOUTHERN', 'PdDistrict_CENTRAL','PdDistrict_PARK', 'PdDistrict_MISSION','CensusRacePercentOtherOnly', 'PdDistrict_INGLESIDE','CensusRaceOtherOnly', 'CensusHispanicPercentMexican','PdDistrict_BAYVIEW', 'CensusHispanicMexican', 'CensusAge18To19','CensusAgePercent15To19', 'PdDistrict_RICHMOND','PdDistrict_TARAVAL', 'CensusAge15To17', 'CensusAgeUnder18','CensusHispanicPercentOtherHispanic','CensusHouseholdsPercentLivingAlone','CensusHouseholdsFemaleHouseholder', 'CensusRaceIndian','CensusHouseholdsHouseholdsWithUnder18','CensusHispanicPuertoRican', 'CensusAge10To14', 'CensusAge45To54','CensusHouseholdsAverageFamilySize','CensusHouseholdsPercentMarriedCouple', 'CensusAge45To64','CensusHouseholdsPercentFamilies', 'CensusAgePercentOver18Male','CensusRaceHawaiianPIOnly', 'CensusRaceBlackOnly','CensusAge15To19', 'CensusHouseholdsAverageHouseholdSize','CensusHispanicOtherHispanic','CensusHouseholdsPercentFamilyKidsUnder18', 'ZctaCode','CensusHispanicTotalPopulation', 'CensusHispanicCuban','CensusAgePercent0To4', 'CensusAgePercentOver18','CensusHouseholdsMarriedCoupleKidsUnder18','CensusHouseholdsPercentSingleMoms', 'CensusHouseholdsSingleMoms','CensusAge55To59', 'CensusHouseholdsFamilyKidsUnder18','CensusAge5To9', 'CensusAge0To4','CensusHouseholdsPercentHouseholdsWithUnder18','CensusAgePercent5To9', 'CensusAge18To24','CensusRacePercentIndian', 'CensusHispanicPercentHispanic','CensusHouseholdsPercentMarriedCoupleKidsUnder18','CensusHispanicPercentCuban', 'CensusAgePercentUnder18','CensusAgeMedianAge', 'CensusHouseholdsLivingAlone','CensusAge20To24', 'CensusHouseholdsPercentFemaleHouseholder','CensusAgePercentOver21', 'zip', 'CensusAgePercent10To14','CensusHouseholdsTotalFamilies', 'CensusRaceMultiRace','CensusAgePercentOver18Female', 'CensusAgePercent18To19', 'GeoId','CensusHispanicPercentPuertoRican', 'CensusSexPercentMale','CensusAgePercentOver65Male', 'CensusAgePercent15To17','CensusRaceOneRaceOnly', 'CensusHispanicNonHispanic','CensusAgePercent55To59', 'CensusAgePercent45To64','CensusAge60To64', 'CensusAgePercent65To74','CensusHouseholdsPercentNonFamily', 'CensusAgeOver18Male','CensusHouseholdsWithOver65', 'CensusHouseholdsNonFamily','CensusAgeOver62', 'CensusAgePercent45To54','CensusHouseholdsMarriedCouple', 'CensusHispanicPercentNonHispanic','CensusAge65To74', 'CensusAgeOver18Female', 'LongitudeDeg','LandAreaSqM', 'LatitudeDeg', 'CensusPeoplePerSqMi', 'AskGeoId','CensusAgePercentOver85', 'CensusSexMale','CensusAgePercentOver65Female', 'CensusAgePercent20To24','CensusHouseholdsPercentUnmarriedPartner','CensusHispanicPercentWhiteNonHispanic', 'CensusAgePercentOver65','CensusAgePercent35To44', 'CensusTotalPopulation','CensusHouseholdsTotal', 'CensusRacePercentMultiRace','CensusSexPercentFemale', 'CensusAgePercent60To64','CensusAgePercentOver62', 'CensusRaceAsianOnly','CensusRacePercentAsianOnly', 'CensusHispanicWhiteNonHispanic','WaterAreaSqM', 'CensusRacePercentBlackOnly','CensusHouseholdsHouseholderOver65', 'CensusAgePercent25To34','CensusAgePercent75To84', 'CensusAgeOver21','CensusHouseholdsPercentHouseholderOver65','CensusHouseholdsUnmarriedPartner','CensusHouseholdsSameSexPartner', 'CensusAge35To44','CensusHouseholdsPercentWithOver65','CensusRacePercentHawaiianPIOnly', 'CensusSexFemale','CensusRacePercentWhiteOnly', 'CensusRaceWhiteOnly','CensusAge25To44', 'CensusRacePercentOneRaceOnly','CensusAgeOver65', 'CensusAgeOver65Male', 'CensusEsriId','CensusHouseholdsPercentSameSexPartner', 'CensusAge75To84','CensusAgeOver18', 'CensusAgePercent25To44','CensusAgePercent18To24', 'CensusAgeOver85','CensusAgeOver65Female', 'CensusAge25To34', 'CensusGeoId','MinDistanceKm', 'CensusGeoLevel']
 ##
 
-features_to_use = sorted_features[0:5]
+features_to_use = sorted_features[0:18]
 
 X = c[features_to_use]
 X_small = small[features_to_use]
@@ -183,6 +191,12 @@ grid.fit(X_small, y_small)
 grid.best_score_
 grid.best_params_
 #23.51% with max depth as 1
+
+ctree = tree.DecisionTreeClassifier()
+depth_range = range(1, 5)
+param_grid = dict(max_depth=depth_range)
+grid = GridSearchCV(ctree, param_grid, cv=5)
+grid.fit(X, y)
 
 nb = MultinomialNB()
 features_train, features_test, response_train, response_test = train_test_split(X, y)
@@ -235,6 +249,23 @@ param_grid = dict(max_depth=depth_range)
 grid = GridSearchCV(ctree, param_grid, cv=5)
 grid.fit(X_small, y)
 smoothie_tree = grid.best_estimator_
+
+
+features_train, features_test, response_train, response_test = train_test_split(X_small, y)
+preds = smoothie_tree.predict(response_test)
+
+probs = smoothie_tree.predict_proba(features_test)[:, 1]
+
+metrics.confusion_matrix(response_test, preds)
+metrics.roc_auc_score(response_test, probs)
+
+fpr, tpr, thresholds = metrics.roc_curve(y_test, probs)
+plt.plot(fpr, tpr)
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.0])
+plt.xlabel('False Positive Rate (1 - Specificity)')
+plt.ylabel('True Positive Rate (Sensitivity)')
+
 
 # logistic regression (3rd)
 
